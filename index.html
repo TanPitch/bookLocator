@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <title>Book Locator</title>
+
+    <link rel="stylesheet" href="index.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;500&family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>  
+
+  <body>
+    <!-- nav bar -->
+    <div id="navbar">
+      <span>Book Locator</span>
+      <!-- <div id="btn_edit"><span class="material-symbols-outlined"> lock </span></div> -->
+      <div class="input" style="margin-left: auto; width: calc(42vw - 16px)">
+        <input id="input_searchBox" placeholder="Search" />
+        <div
+          class="btn_close"
+          onclick="document.querySelector('#input_searchBox').value='';document.querySelector('#searchBar').style='none'"
+        >
+          &times;
+        </div>
+        <div id="btn_filter" class="btn_filter">
+          <span class="material-symbols-outlined"> filter_alt </span>
+        </div>
+      </div>
+    </div>
+    <div id="searchBar"></div>
+    <div id="filterBar">
+      <div class="column">
+        <div style="font-weight: 900">Search by</div>
+        <div class="row click" onclick="filter_search('name')">
+          <span class="material-symbols-outlined"> radio_button_checked </span><span>Name</span>
+        </div>
+        <div class="row click" onclick="filter_search('author')">
+          <span class="material-symbols-outlined"> radio_button_unchecked </span><span>Author</span>
+        </div>
+        <div class="row click" onclick="filter_search('category')">
+          <span class="material-symbols-outlined"> radio_button_unchecked </span><span>Category</span>
+        </div>
+        <div class="row click" onclick="filter_search('publisher')">
+          <span class="material-symbols-outlined"> radio_button_unchecked </span><span>Publisher</span>
+        </div>
+        <div class="row click" onclick="filter_search('isbn')">
+          <span class="material-symbols-outlined"> radio_button_unchecked </span><span>ISBN</span>
+        </div>
+      </div>
+      <div class="column">
+        <div style="font-weight: 900">Filter by</div>
+        <div class="row click" onclick="generate_filter_lists('category')">
+          <span>Category</span><span class="material-symbols-outlined"> expand_more </span>
+        </div>
+        <div class="filter_content"></div>
+        <div class="row click" onclick="generate_filter_lists('location')">
+          <span>Location</span><span class="material-symbols-outlined"> expand_more </span>
+        </div>
+        <div class="filter_content"></div>
+        <div class="row click" onclick="generate_filter_lists('reading')">
+          <span>Reading</span><span class="material-symbols-outlined"> expand_more </span>
+        </div>
+        <div class="filter_content"></div>
+        <div class="row click" onclick="generate_filter_lists('cover')">
+          <span>Cover</span><span class="material-symbols-outlined"> expand_more </span>
+        </div>
+        <div class="filter_content"></div>
+      </div>
+    </div>
+
+    <!-- alert : no data loaded -->
+    <div id="alert_noData">
+      <div>
+        <span class="material-symbols-outlined"> shelf_position </span>
+        <span>Database not loaded. Drag and drop the file here, or click to load.</span>
+      </div>
+    </div>
+
+    <div id="shelf">
+      <!-- drop down : shelf lists -->
+      <div class="row">
+        <div id="shelf_nameLists">
+          <div id="shelf_name"></div>
+          <div id="shelf_lists"></div>
+        </div>
+        <div id="shelf_colorBtn">
+          <div id="btn_shelf_color">
+            <span class="material-symbols-outlined"> palette </span>
+          </div>
+          <div id="shelfColor_lists"></div>
+        </div>
+        <div id="shelf_chartBtn">
+          <div id="btn_shelf_chart">
+            <span class="material-symbols-outlined"> pie_chart </span>
+          </div>
+          <div id="shelfChart_lists">
+            <canvas id="shelfChart_canvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="shelf_area_container">
+      </div>
+      <div id="shelf_area"></div>
+
+      <!-- pop up : book detail -->
+      <div id="shelf_detail" class="up">
+        <div id="shelf_detail_bookCoverContainer">
+          <div id="shelf_detail_bookCover"><img /></div>
+        </div>
+        <div id="shelf_detail_bookDetail">
+          <div id="shelf_detail_name"></div>
+          <div id="shelf_detail_author"></div>
+        </div>
+      </div>
+    </div>
+    <div id="book">
+      <div id="book_imageContainer">
+        <div id="book_image"><img /></div>
+      </div>
+      <div id="book_detail">
+        <div id="book_name"></div>
+        <div id="book_author"></div>
+        <div id="book_star">
+          <svg height="20px" width="20px" viewBox="0 0 47.94 47.94">
+            <g>
+              <path
+                style="fill: #ffa63e"
+                d="M26.285,2.486l5.407,10.956c0.376,0.762,1.103,1.29,1.944,1.412l12.091,1.757 c2.118,0.308,2.963,2.91,1.431,4.403l-8.749,8.528c-0.608,0.593-0.886,1.448-0.742,2.285l2.065,12.042 c0.362,2.109-1.852,3.717-3.746,2.722l-10.814-5.685c-0.752-0.395-1.651-0.395-2.403,0l-10.814,5.685 c-1.894,0.996-4.108-0.613-3.746-2.722l2.065-12.042c0.144-0.837-0.134-1.692-0.742-2.285l-8.749-8.528 c-1.532-1.494-0.687-4.096,1.431-4.403l12.091-1.757c0.841-0.122,1.568-0.65,1.944-1.412l5.407-10.956 C22.602,0.567,25.338,0.567,26.285,2.486z"
+              ></path>
+            </g>
+          </svg>
+          <span>/5.0</span>
+        </div>
+        <div id="book_descript"></div>
+        <div id="book_tags"></div>
+      </div>
+    </div>
+    <div id="gallery_container">
+      <div id="gallery"></div>
+      <div id="btn_scrollTop"><span class="material-symbols-outlined"> arrow_circle_up </span></div>
+    </div>
+    <div id="edit"></div>
+
+    <div id="footbar">
+      <div id="btn_shelf" class="btn selected">
+        <span class="material-symbols-outlined"> shelf_position </span>
+      </div>
+      <div id="btn_book" class="btn"><span class="material-symbols-outlined"> menu_book </span></div>
+      <div id="btn_gallery" class="btn"><span class="material-symbols-outlined"> grid_view </span></div>
+      <div id="btn_edit" class="btn"><span class="material-symbols-outlined"> draw </span></div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
