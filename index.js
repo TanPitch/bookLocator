@@ -1,6 +1,7 @@
 /*
   TODO:
   [ ] make edit page
+  [ ] can embedded base64 image instead of link
 
   OPTIMIZE:
 
@@ -49,7 +50,7 @@ const lazy_image = () => {
 const loadData_googleSheet = () => {
   let SHEET_ID = "1zLSnZ7vBBJf9QFpM1mQIQSB9WepuFUSogu23Wd3ntAY";
   let SHEET_TITLE = "Book lists";
-  let SHEET_RANGE = "A1:L2000";
+  let SHEET_RANGE = "A1:N2000";
 
   dataArray = [];
   isDataloaded = false;
@@ -83,6 +84,7 @@ const loadData_googleSheet = () => {
         "Star",
         "Description",
         "Note",
+        "Type",
       ];
       for (let i = 0; i < data.table.rows.length; i++) {
         var rowData = {};
@@ -1238,6 +1240,7 @@ const generate_book = (book_number) => {
     if (i != book_authorArray.length - 1) book_author.innerHTML += ", ";
   }
 
+  
   book_image.src = dataArray_filter[book_number].Img;
   book_name.textContent = dataArray_filter[book_number].Name;
   book_star.textContent = `${Number(dataArray_filter[book_number].Star).toFixed(1)} / 5.0`;
@@ -1252,6 +1255,10 @@ const generate_book = (book_number) => {
   <div onclick="book_searchNear_cover('${dataArray_filter[book_number].Cover}')">${
     dataArray_filter[book_number].Cover.charAt(0).toUpperCase() +
     dataArray_filter[book_number].Cover.slice(1)
+  }</div>
+  <div>${
+    dataArray_filter[book_number].Type.charAt(0) +
+    dataArray_filter[book_number].Type.slice(1)
   }</div>`;
 };
 
