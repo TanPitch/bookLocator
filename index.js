@@ -50,7 +50,7 @@ const lazy_image = () => {
 const loadData_googleSheet = () => {
   let SHEET_ID = "1zLSnZ7vBBJf9QFpM1mQIQSB9WepuFUSogu23Wd3ntAY";
   let SHEET_TITLE = "Book lists";
-  let SHEET_RANGE = "A1:N2000";
+  let SHEET_RANGE = "A1:Q2000";
 
   dataArray = [];
   isDataloaded = false;
@@ -80,11 +80,13 @@ const loadData_googleSheet = () => {
         "Status",
         "Bag",
         "Locate",
-        "Img",
         "Star",
         "Description",
         "Note",
         "Type",
+        "Img1",
+        "Img2",
+        "Img3",
       ];
       for (let i = 0; i < data.table.rows.length; i++) {
         var rowData = {};
@@ -105,6 +107,14 @@ const loadData_googleSheet = () => {
             }
           }
         }
+        
+        // concat Img from Img1, Img2, Img3
+        const concatImg = rowData.Img1 + rowData.Img2 + rowData.Img3;
+        rowData.Img = concatImg;
+        delete rowData.Img1;
+        delete rowData.Img2;
+        delete rowData.Img3;
+
         dataArray.push(rowData);
         dataArray_filter.push(rowData);
       }
@@ -1240,7 +1250,6 @@ const generate_book = (book_number) => {
     if (i != book_authorArray.length - 1) book_author.innerHTML += ", ";
   }
 
-  
   book_image.src = dataArray_filter[book_number].Img;
   book_name.textContent = dataArray_filter[book_number].Name;
   book_star.textContent = `${Number(dataArray_filter[book_number].Star).toFixed(1)} / 5.0`;
@@ -1256,10 +1265,7 @@ const generate_book = (book_number) => {
     dataArray_filter[book_number].Cover.charAt(0).toUpperCase() +
     dataArray_filter[book_number].Cover.slice(1)
   }</div>
-  <div>${
-    dataArray_filter[book_number].Type.charAt(0) +
-    dataArray_filter[book_number].Type.slice(1)
-  }</div>`;
+  <div>${dataArray_filter[book_number].Type.charAt(0) + dataArray_filter[book_number].Type.slice(1)}</div>`;
 };
 
 // search nearest book
