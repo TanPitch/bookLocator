@@ -48,7 +48,7 @@ const lazy_image = () => {
 
 // load data from google sheet
 const loadData_googleSheet = () => {
-  let SHEET_ID = "1zLSnZ7vBBJf9QFpM1mQIQSB9WepuFUSogu23Wd3ntAY";
+  let SHEET_ID = "18x6ENZxvfBUDmwePF47NTGgzM1C8YQkLbMVErrr3Dzw";
   let SHEET_TITLE = "Book lists";
   let SHEET_RANGE = "A1:Q2000";
 
